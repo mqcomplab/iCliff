@@ -25,7 +25,10 @@ for file in glob.glob('/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/
 
             # Flatten arrays to calculate KT
             flat_sali = sali.flatten()
+            non_nan_positions = np.argwhere(~np.isnan(flat_sali))
+            flat_sali = flat_sali[non_nan_positions]
             flat_ts_sali = ts_sali.flatten()
+            flat_ts_sali = flat_ts_sali[non_nan_positions]
 
             # Calculate the Kendall Tau
             kt_ts = kendalltau(flat_sali, flat_ts_sali)[0]
