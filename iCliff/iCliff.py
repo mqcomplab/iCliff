@@ -144,11 +144,11 @@ def mol_set_tanimoto(mol, mol_set):
     sim_matrix = a / (np.sum(mol_set, axis = 1) + np.sum(mol) - a)
     return sim_matrix
 
-def sali_icliff_analysis(ts_sali_matrix, icliff_vector, out_name = 'sali_analysis.csv'):
+def sali_analysis(ts_sali_matrix, icliff_vector, out_name = 'sali_analysis.csv'):
     """Compares the rankings of molecules in the SALI and iCliff orders."""
 
     # Sum columnwise the SALI matrix
-    ts_sali_vector = np.sum(ts_sali_matrix, axis = 0)
+    sali_vector = np.sum(ts_sali_matrix, axis = 0)
 
     if len(sali_vector.shape) != 1 or len(icliff_vector.shape) != 1:
         sali_vector = sali_vector.flatten()
@@ -225,26 +225,18 @@ def calculate_iCliff(fps, props):
     
     return iCliff
 
-# Matrix of (Pi - Pj)**2, from normalized properties
-#prop_matrix = np.load('prop_matrix_2.npy')
+def ts_sali_max(ts_sali_matrix, frac_max = 0.1):
+    # Identify max value in the ts_sali matrix
+    max_ts_sali = np.max(ts_sali_matrix)
+ 
+    # Threshold
+    s_threshold = max_ts_sali * frac_max
 
-# Matrix of pairwise Tanimotos
-#sim_matrix = np.load('sim_matrix_2.npy')
+    # Modify SALI matrix to only have 1's for activity cliffs and 0 elsewhere
+    ts_sali_matrix[ts_sali_matrix >= s_threshold] = 1
+    ts_sali_matrix[ts_sali_matrix < s_threshold] = 0
 
-# Standard SALI
-#sali = prop_matrix/(1 - sim_matrix)
-#np.fill_diagonal(sali, 0)
-
-# Taylor sum SALI
-#ts_sali = prop_matrix * (1 + sim_matrix + sim_matrix**2)/3
-
-# Flatten arrays to calculate KT
-#flat_sali = sali.flatten()
-#flat_ts_sali = ts_sali.flatten()
-
-#kt_ts = kendalltau(flat_sali, flat_ts_sali)
-
-#print(kt_ts[0])
+    return ts_sali_matrix
 
 # Detailed process on how to calculate icliff
 #file = 'CHEMBL2047_EC50_fp.pkl'
