@@ -155,6 +155,7 @@ def sali_matrix(prop_matrix, sim_matrix):
     """Calculate the SALI matrix from the property and similarity matrices."""
     sali = prop_matrix/(1 - sim_matrix)
     np.fill_diagonal(sali, 0)
+    sali = np.nan_to_num(sali, nan=1, posinf=1, neginf=-1)
     return sali
 
 def ts_sali_matrix(prop_matrix, sim_matrix, term = 2):

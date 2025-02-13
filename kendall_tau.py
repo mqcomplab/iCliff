@@ -5,16 +5,16 @@ import glob
 import pandas as pd
 
 entries = []
-for file in glob('/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/prop_diffs/CHEMBL*'):
+for file in glob.glob('/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/prop_diffs/CHEMBL*'):
     # Get the name
-    name = file.split('/')[-1].split('_')[0]
+    name = file.split('/')[-1].split('.')[0]
 
     # Read the property matrix
     props = np.load(file)
 
-    for fp in ['RDKIT', 'ECFP4', 'MACCS']:
+    for fp in ['RDKIT', 'ECFP', 'MACCS']:
         # Read the similarity matrix
-        sim = np.load(f'/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/JT/{name}/{name}_{fp}_JT.npy')
+        sim = np.load(f'/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/JT/{fp}/{name}_{fp}_JT.npy')
 
         # Calculate the SALI matrix
         sali = sali_matrix(props, sim)
@@ -30,8 +30,9 @@ for file in glob('/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/prop_
             # Calculate the Kendall Tau
             kt_ts = kendalltau(flat_sali, flat_ts_sali)[0]
 
+            print(f"{name} kendall: {kt_ts}")
             entries.append([name, fp, term, kt_ts])
 
 # Save the results
 df = pd.DataFrame(entries, columns = ['name', 'fp', 'term', 'kt'])
-df.to_csv('kendall_tau.csv', index = False)
+df.to_csv('kendall_tau_.csv', index = False)
