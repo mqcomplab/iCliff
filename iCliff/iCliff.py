@@ -32,6 +32,29 @@ def tanimoto_similarity(fp1, fp2):
     
     return tanimoto
 
+def calculate_comp_sim(fps):
+    """Calculate the complementary similarity for RR, JT, or SM
+
+    Arguments
+    ---------
+    fps : np.ndarray
+        Array of arrays, each sub-array contains the binary object 
+        
+    Returns
+    -------
+    comp_sims : nd.array
+        1D array with the complementary similarities of all the molecules in the set.
+    """
+    
+    n_objects = len(fps) - 1
+    c_total = np.sum(fps, axis = 0)
+    comp_matrix = c_total - fps
+    a = comp_matrix * (comp_matrix - 1)/2
+    
+    comp_sims = np.sum(a, axis = 1)/np.sum((a + comp_matrix * (n_objects - comp_matrix)), axis = 1)
+
+    return comp_sims
+
 def tanimoto_similarity_matrix(fps):
     """
     Calculate the Tanimoto similarity matrix for a set of fingerprints.
@@ -121,8 +144,11 @@ def mol_set_tanimoto(mol, mol_set):
     sim_matrix = a / (np.sum(mol_set, axis = 1) + np.sum(mol) - a)
     return sim_matrix
 
-def sali_analysis(sali_vector, icliff_vector, out_name = 'sali_analysis.csv'):
+def sali_icliff_analysis(ts_sali_matrix, icliff_vector, out_name = 'sali_analysis.csv'):
     """Compares the rankings of molecules in the SALI and iCliff orders."""
+
+    # Sum columnwise the SALI matrix
+    ts_sali_vector = np.sum(ts_sali_matrix, axis = 0)
 
     if len(sali_vector.shape) != 1 or len(icliff_vector.shape) != 1:
         sali_vector = sali_vector.flatten()
@@ -169,6 +195,35 @@ def ts_sali_matrix(prop_matrix, sim_matrix, term = 2):
     else:
         raise ValueError('Unsupported term value. Choose 1, 2 or 3.')    
     return ts_sali
+
+def calculate_iCliff(fps, props):
+    """Calculate the iCliff values for a set of fingerprints and properties."""
+    # Calculate the complementary similarities
+    csims = calculate_comp_sim(fps)
+
+    # Get the number of fingerprints
+    nfps = len(fps)
+
+    # Check if the properties are normalized
+    if np.max(props) > 1 or np.min(props) < 0:
+        props = (props - np.min(props))/(np.max(props) - np.min(props))
+
+    # Squared values of the properties
+    props_sq = props**2
+
+    # Sum of all properties
+    s_props = np.sum(props)
+
+    # Sum of the squares of the properties
+    s_props_sq = np.sum(props_sq)
+
+    # Sum of squared errors after removing each molecule
+    props_dev = (s_props_sq - props_sq)/(nfps - 1) - ((s_props - props)/(nfps - 1))**2
+
+    # iCliff values for each molecule
+    iCliff = props_dev * (1 + csims + csims**2 + csims**3)/4
+    
+    return iCliff
 
 # Matrix of (Pi - Pj)**2, from normalized properties
 #prop_matrix = np.load('prop_matrix_2.npy')
