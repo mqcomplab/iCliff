@@ -10,7 +10,7 @@ for file in glob.glob('/blue/rmirandaquintana/klopezperez/ecliffs/fps/CHEMBL*'):
     name = file.split('/')[-1].split('.')[0]
 
     # Read the data
-    data = pd.read_pickle(f'/blue/rmirandaquintana/klopezperez/ecliffs/fps/{file.split(".")[0]}.pkl')
+    data = pd.read_pickle(f'/blue/rmirandaquintana/klopezperez/ecliffs/fps/{name}.pkl')
 
     # Read the properties and fps
     props = data['prop']
@@ -26,18 +26,16 @@ for file in glob.glob('/blue/rmirandaquintana/klopezperez/ecliffs/fps/CHEMBL*'):
     props = (props - np.min(props))/(np.max(props) - np.min(props))
 
     # Calculate the iCliff values
-    iCliff = calculate_iCliff(props, fps)
+    iCliff = calculate_iCliff(fps, props)
 
     # Find the indexes of the 10 lowest iCliff values
     idx = np.argsort(iCliff)[:10]
 
     # Calculate the ts_sali
-    prop_matrix = np.load(f'/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/prop_diffs/CHEMBL*', mmap_mode='r')
-    sim_matrix = np.load(f'/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/JT/{fp_type}/{file.split(".")[0]}_{fp_type}_JT.npy', mmap_mode='r')
+    prop_matrix = np.load(f'/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/prop_diffs/{name}.npy', mmap_mode='r')
+    sim_matrix = np.load(f'/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/JT/{fp_type}/{name}_{fp_type}_JT.npy', mmap_mode='r')
 
-    ts_sali = ts_sali_matrix(props, fps, term=3)
-
-    del prop_matrix, sim_matrix
+    ts_sali = ts_sali_matrix(prop_matrix, sim_matrix, term=3)
 
     # Keep the ts_sali rows that are in the idx
     ts_sali = ts_sali[idx]
@@ -59,7 +57,7 @@ for database in np.unique(df['name']):
     df_ = df[df['name'] == database]
 
     drop_name = database.split('_f')[0]
-    data = pd.read_csv(f'/blue/rmirandaquintana/klopezperez/ecliffs/csv_smiles/{database}.csv')
+    data = pd.read_csv(f'/blue/rmirandaquintana/klopezperez/ecliffs/csv_smiles/{drop_name}.csv')
 
     # Get the smiles
     smiles = data['smiles']
