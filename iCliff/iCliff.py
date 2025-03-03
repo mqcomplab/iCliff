@@ -32,6 +32,31 @@ def tanimoto_similarity(fp1, fp2):
     
     return tanimoto
 
+
+def jt_isim(c_total, n_objects):
+    """iSIM Tanimoto calculation
+    
+    https://pubs.rsc.org/en/content/articlelanding/2024/dd/d4dd00041b
+    
+    Parameters
+    ----------
+    c_total : np.ndarray
+              Sum of the elements column-wise
+              
+    n_objects : int
+                Number of elements
+                
+    Returns
+    ----------
+    isim : float
+           iSIM Jaccard-Tanimoto value
+    """
+    sum_kq = np.sum(c_total)
+    sum_kqsq = np.dot(c_total, c_total)
+    a = (sum_kqsq - sum_kq)/2
+
+    return a/(a + n_objects * sum_kq - sum_kqsq)
+
 def calculate_comp_sim(fps):
     """Calculate the complementary similarity for RR, JT, or SM
 
@@ -197,6 +222,21 @@ def ts_sali_matrix(prop_matrix, sim_matrix, term = 2):
     return ts_sali
 
 def calculate_iCliff(fps, props):
+    """Calculate the iCliff values for a set of fingerprints and properties."""
+    N = len(fps)
+
+    # Calculate iSIM Tanimoto
+    iSIM = jt_isim(np.sum(fps, axis = 0), N)
+
+    # Calculate the average squared differences between the properties
+    prop_diffs = 2 * (np.sum((props**2)/N) - (np.sum(props)/N)**2)
+
+    # Calculate the iCliff values
+    iCliff = prop_diffs * (1 + iSIM + iSIM**2 + iSIM**3)/4
+    
+    return iCliff
+
+def calculate_comp_iCliff(fps, props):
     """Calculate the iCliff values for a set of fingerprints and properties."""
     # Calculate the complementary similarities
     csims = calculate_comp_sim(fps)

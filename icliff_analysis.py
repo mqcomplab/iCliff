@@ -1,5 +1,5 @@
 import numpy as np
-from iCliff.iCliff import calculate_iCliff, ts_sali_max, sali_analysis, ts_sali_matrix, jaccard, sali_matrix
+from iCliff.iCliff import calculate_comp_iCliff, ts_sali_max, sali_analysis, ts_sali_matrix, jaccard, sali_matrix
 import pandas as pd
 import glob
 
@@ -30,7 +30,7 @@ for file in glob.glob('/blue/rmirandaquintana/klopezperez/ecliffs/fps/CHEMBL*.pk
     props = (props - np.min(props))/(np.max(props) - np.min(props))
 
     # Calculate the iCliff values
-    iCliff = calculate_iCliff(fps, props)
+    iCliff = calculate_comp_iCliff(fps, props)
 
     # Calculate the ts_sali
     prop_matrix = np.load(f'/blue/rmirandaquintana/klopezperez/ecliffs/pair_matrices/prop_diffs/{name}.npy', mmap_mode='r')
