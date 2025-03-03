@@ -46,7 +46,10 @@ for file in glob.glob('/blue/rmirandaquintana/klopezperez/ecliffs/fps/CHEMBL*.pk
         # Get the iCliff global
         iCliff_global = calculate_iCliff(fps, props)
 
-        entried.append([name, fp, iCliff, avg_ts_sali])
+        entry = [name, fp, iCliff_global, avg_ts_sali]
+        print(entry)
+        entries.append(entry)
+        
 
 # Save the results
 df = pd.DataFrame(entries, columns = ['name', 'fp', 'iCliff', 'ts_sali_avg'])
