@@ -12,4 +12,5 @@ for file in ts_sali_files:
     plt.title(file)
     plt.savefig(f'plots/{file.split("/")[-1].split(".")[0]}_hist.png')
 
-
+    # Clear the plot
+    plt.clf()
