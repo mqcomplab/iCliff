@@ -34,14 +34,17 @@ for file in glob.glob('/blue/rmirandaquintana/klopezperez/ecliffs/fps/CHEMBL*.pk
     # Calculate the ts_sali matrix
     ts_sali = ts_sali_matrix(prop_diff, sim_matrix, 3)
 
+    # Save the ts_sali_matrices
+    np.save(f'plots/{name}_ts_sali.npy', ts_sali)
+
     # Find the positions where you find the top 10% of the ts_sali matrix, think that this is a 2D matrix
-    top_10 = np.percentile(ts_sali, 90)
+    top = np.percentile(ts_sali, 99.9)
 
     # Find the positions where you find the top 10% of the ts_sali matrix
-    top_10_positions = np.argwhere(ts_sali > top_10)
+    top_positions = np.argwhere(ts_sali > top)
 
     # Get the unique indexes
-    unique_positions = np.unique(top_10_positions.flatten())
+    unique_positions = np.unique(top_positions.flatten())
 
     # Calculate the iCliff value
     iCliff = calculate_iCliff(fps, props)
