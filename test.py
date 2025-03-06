@@ -5,14 +5,13 @@ import matplotlib.pyplot as plt
 # Read all the ts_sali matrices
 ts_sali_files = glob.glob('plots/*ts_sali.npy')
 
+st10, st5, st1 = [], [], []
 # Create a histogram for the matrices values
 for file in ts_sali_files:
     ts_sali = np.load(file)
-    plt.hist(ts_sali.flatten(), bins=100)
-    #plt.title(file)
-    plt.xlabel('TS SALI')
-    plt.ylabel('Number of occurrences')
-    plt.savefig(f'plots/{file.split("/")[-1].split(".")[0]}_hist.png')
+    t10, t5, t1 = np.percentile(ts_sali, 90), np.percentile(ts_sali, 95), np.percentile(ts_sali, 99)
+    st10.append(t10)
+    st5.append(t5)
+    st1.append(t1)
 
-    # Clear the plot
-    plt.clf()
+print(np.mean(st10), np.mean(st5), np.mean(st1))
