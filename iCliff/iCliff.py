@@ -105,9 +105,13 @@ def pair_prop_diff(p, props):
     """Calculate the squared differences between a property and all the other property values in the set."""
     return (props - p)**2
 
-def pair_prop_diff_matrix(props):
+def squared_prop_diff_matrix(props):
     """Calculate the pairwise squared differences between properties."""
     return np.square(props[:, None] - props)
+
+def abs_pair_prop_diff_matrix(props):
+    """Calculate the pairwise absolute differences between properties."""
+    return np.abs(props[:, None] - props)
 
 def sort_indices(arr, order='asc'):
     """
@@ -264,89 +268,3 @@ def calculate_comp_iCliff(fps, props):
     iCliff = props_dev * (1 + csims + csims**2 + csims**3)/4
     
     return iCliff
-
-def ts_sali_max(ts_sali_matrix, frac_max = 0.1):
-    # Identify max value in the ts_sali matrix
-    max_ts_sali = np.max(ts_sali_matrix)
- 
-    # Threshold
-    s_threshold = max_ts_sali * frac_max
-
-    # Modify SALI matrix to only have 1's for activity cliffs and 0 elsewhere
-    ts_sali_matrix[ts_sali_matrix >= s_threshold] = 1
-    ts_sali_matrix[ts_sali_matrix < s_threshold] = 0
-
-    return ts_sali_matrix
-
-# Detailed process on how to calculate icliff
-#file = 'CHEMBL2047_EC50_fp.pkl'
-
-#obj = pd.read_pickle(file)
-
-#fp_type = 'ECFP'
-
-# Fingerprints
-#fps = obj[fp_type]
-
-# Number of molecules
-#nfps = len(fps)
-
-# Properties
-#props = np.array(obj['prop'])
-#props = np.log(props)
-
-# Normalizing
-#props = (props - np.min(props))/(np.max(props) - np.min(props))
-
-# Squared values of the properties
-#props_sq = props**2
-
-# Sum of all properties
-#s_props = np.sum(props)
-
-# Sum of the squares of the properties
-#s_props_sq = np.sum(props_sq)
-
-# Sum of squared errors after removing each molecule
-#props_dev = (s_props_sq - props_sq)/(nfps - 1) - ((s_props - props)/(nfps - 1))**2
-
-# Complementary similarities
-#csims = calculate_comp_sim(fps, n_ary='JT')
-
-# iCliff values for each molecule
-
-#icliff_s = props_dev * (1 + csims + csims**2)/3
-
-# Analysis of the correspondence of the rankings of both SALI types for the global ACs (sum of elements of the SALI matrix)
-# These functions generate files with two columns:
-# First column: difference in ranking of molecules sorted with SALI and iCliff (the lower the number the better)
-# Second column: Set Jaccard similarity of the molecules selected by SALI and iCliff
-#ts_sali_total = np.sum(ts_sali, axis=0)
-#sali_analysis(ts_sali_total, icliff_s, out_name = 'global_ss') # This seems to do a much better job
-
-# Local SALI analysis
-# This is the classical AC study, where only individual values in the matrix that are above a threshold are taken into account
-# Given the differences in the product and sum SALI formulas, it makes sense to consider different thresholds for both
-
-# iCliff_s analysis
-
-# Set threshold
-
-# Identify max value in the ts_sali matrix
-#max_ts_sali = np.max(ts_sali)
-
-# Up to which % of the max we are going to consider the ACs
-#frac_max = 0.1 # For ~0.9-0.6 there are just too few ACs for this to be meaningful. At 0.4 the results become pretty good
-
-# Threshold
-#s_threshold = max_ts_sali * frac_max
-
-# Modify SALI matrix to only have 1's for activity cliffs and 0 elsewhere
-#ts_sali[ts_sali >= s_threshold] = 1
-#ts_sali[ts_sali < s_threshold] = 0
-
-# Calculate number of activity cliffs/molecule
-#ac_summary_s = np.sum(ts_sali, axis=0)
-
-# Perform SALI analysis
-#sali_analysis(ac_summary_s, icliff_s, out_name = 'local_ss')
