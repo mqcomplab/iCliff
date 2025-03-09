@@ -3,7 +3,6 @@ from iCliff.iCliff import calculate_comp_iCliff, sali_analysis
 import glob
 
 fp_type = 'ECFP4'
-kendalls = []
 for file in glob.glob('data/props/*.npy'):
     # Get the name
     name = file.split('/')[-1].split('.')[0]
