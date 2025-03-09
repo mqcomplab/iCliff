@@ -21,4 +21,4 @@ for file in glob.glob('data/props/*.npy'):
     iCliff = calculate_comp_iCliff(fps, props)
 
     # Do the sali analysis
-    df = sali_analysis(iCliff, ts_sali, f'results/jaccard/{name}.csv')
+    df = sali_analysis(ts_sali, iCliff, f'results/jaccard/{name}.csv')
