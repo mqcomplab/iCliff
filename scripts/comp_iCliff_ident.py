@@ -28,7 +28,7 @@ for file in glob.glob('data/props/*.npy'):
 
     # Calculate the new iCliff values before and after removing the 10%
     iCliff = calculate_iCliff(fps, props)
-    iCliff_ = calculate_comp_iCliff(fps_, props_)
+    iCliff_ = calculate_iCliff(fps_, props_)
 
     # Save the results
     entries.append([name, iCliff, iCliff_])
