@@ -1,6 +1,7 @@
 import numpy as np
 from iCliff.iCliff import calculate_comp_iCliff, calculate_iCliff
 import glob
+import pandas as pd
 
 fp_type = 'ECFP4'
 entries = []
@@ -33,6 +34,7 @@ for file in glob.glob('data/props/*.npy'):
     entries.append([name, iCliff, iCliff_])
 
 # Save the results
-np.save(f'results/iCliff_ident.npy', entries)
+df = pd.DataFrame(entries, columns=['name', 'iCliff', 'iCliff_after'])
+df.to_csv('results/iCliff_como_ident.csv', index = False)
 
 
