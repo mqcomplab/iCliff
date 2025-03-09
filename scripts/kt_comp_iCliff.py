@@ -17,7 +17,7 @@ for file in glob.glob('data/props/*.npy'):
     fps = np.load(f'data/fps/{fp_type}/{name}.npy', mmap_mode='r')
 
     # Read the ts_sali matrix
-    ts_sali = np.load(f'data/ts_sali/{fp_type}/{name}.npy', mmap_mode='r')
+    ts_sali = np.load(f'data/ts_sali_matrix/{fp_type}/{name}.npy', mmap_mode='r')
 
     # Calculate the iCliff values
     iCliff = calculate_comp_iCliff(fps, props)

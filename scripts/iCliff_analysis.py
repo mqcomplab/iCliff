@@ -16,7 +16,7 @@ for file in glob.glob('data/props/*.npy'):
     fps = np.load(f'data/fps/{fp_type}/{name}.npy', mmap_mode='r')
     
     # Read the ts_sali matrix
-    ts_sali = np.load(f'data/ts_sali/{fp_type}/{name}.npy', mmap_mode='r')
+    ts_sali = np.load(f'data/ts_sali_matrix/{fp_type}/{name}.npy', mmap_mode='r')
 
     # Find the positions where you find the top 10% of the ts_sali matrix, think that this is a 2D matrix
     top = np.percentile(ts_sali, 99.9)

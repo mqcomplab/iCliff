@@ -4,7 +4,7 @@ import pandas as pd
 from iCliff.utils import binary_fps_numpy, rdkit_pairwise_matrix
 
 # Script to preprocess the properties of the molecules in the sets
-for file in glob.glob('data/*.csv'):
+for file in glob.glob('data/smiles/*.csv'):
     # Get the name of the database
     name = file.split('/')[-1].split('.')[0]
 
@@ -23,6 +23,9 @@ for file in glob.glob('data/*.csv'):
 
     # Calculate the pKi or the pEC50
     props = -np.log10(props)
+
+    # Normalize the properties
+    props = (props - np.min(props)) / (np.max(props) - np.min(props))
 
     # Save the properties
     np.save('data/props/' + name + '.npy', props)
