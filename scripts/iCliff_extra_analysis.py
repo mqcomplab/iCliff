@@ -28,9 +28,6 @@ for file in glob.glob('data/props/*.npy'):
     idx = np.argsort(comp_iCliff)
     idx = idx[int(len(idx)*0.01):]
 
-    # Get the ts_sali values for the selected indices
-    ts_sali = ts_sali[idx]
-
     smiles_1 = []
     smiles_2 = []
     props_1 = []
@@ -38,31 +35,31 @@ for file in glob.glob('data/props/*.npy'):
     sim = []
     ts_salis = []
     # Save the instances where the TS_SALI values are the in the top 10 for each compound in the rows
-    for i in range(len(idx)):
+    for id in idx:
         # Get the top 10% of the ts_sali values for each compound
-        top = np.percentile(ts_sali[i], 90)
+        top = np.percentile(ts_sali[id], 90)
 
         # Get the indices of the top 10% values
-        top_indices = np.argwhere(ts_sali[i] > top)
+        top_indices = np.argwhere(ts_sali[id] > top)
         top_indices = top_indices[:, 0]
 
         # Get the ts_sali values of the problematic compound and their 10% according to TSSALI
-        ts_sali_prob = ts_sali[i][top_indices]
+        ts_sali_prob = ts_sali[id][top_indices]
 
         # Get the smiles of the problematic compound and their 10% according to TSSALI
-        smiles_prob = smiles[idx[i]]
-        smiles_top = smiles[idx[top_indices]]
+        smiles_prob = smiles[id]
+        smiles_top = smiles[top_indices]
 
         # Replicate the problematic compound smiles as many times as the top 10% according to TSSALI
         smiles_prob = np.array([smiles_prob]*len(smiles_top))
 
         # Get the properties of the problematic compound and their 10% according to TSSALI
-        props_prob = props[idx[i]]
-        props_top = props[idx[top_indices]]
+        props_prob = props[id]
+        props_top = props[top_indices]
 
         # Get the fps of the problematic compound and their 10% according to TSSALI
-        fps_prob = fps[idx[i]]
-        fps_top = fps[idx[top_indices]]
+        fps_prob = fps[id]
+        fps_top = fps[top_indices]
 
         # Get the similarity of the problematic compound and their 10% according to TSSALI
         sim_prob = mol_set_tanimoto(fps_prob, fps_top)
