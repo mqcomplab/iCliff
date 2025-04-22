@@ -24,9 +24,9 @@ for file in glob.glob('data/props/*.npy'):
     # Calculate the comp_iCliff values
     comp_iCliff = calculate_comp_iCliff(fps, props)
 
-    # Sort the iCliff values, get the 1% with lowest comp iCliff values
+    # Sort the iCliff values, get the 5% with lowest comp iCliff values
     idx = np.argsort(comp_iCliff)
-    idx = idx[int(len(idx)*0.01):]
+    idx = idx[int(len(idx)*0.05):]
 
     smiles_1 = []
     smiles_2 = []
@@ -55,6 +55,7 @@ for file in glob.glob('data/props/*.npy'):
 
         # Get the properties of the problematic compound and their 10% according to TSSALI
         props_prob = props[id]
+        props_prob = np.array([props_prob]*len(smiles_top))
         props_top = props[top_indices]
 
         # Get the fps of the problematic compound and their 10% according to TSSALI
@@ -65,12 +66,12 @@ for file in glob.glob('data/props/*.npy'):
         sim_prob = mol_set_tanimoto(fps_prob, fps_top)
 
         # Append the values to the lists
-        smiles_1.append(smiles_prob)
-        smiles_2.append(smiles_top)
-        props_1.append(props_prob)
-        props_2.append(props_top)
-        sim.append(sim_prob)
-        ts_salis.append(ts_sali_prob)
+        smiles_1.extend(smiles_prob)
+        smiles_2.extend(smiles_top)
+        props_1.extend(props_prob)
+        props_2.extend(props_top)
+        sim.extend(sim_prob)
+        ts_salis.extend(ts_sali_prob)
 
     # Save the values to a dataframe
     df = pd.DataFrame({
@@ -86,6 +87,4 @@ for file in glob.glob('data/props/*.npy'):
     df.to_csv(f'results/pair_identification/{name}_iCliff.csv', index=False)
 
     # Print finished
-    print(f'Finished {name} iCliff analysis')
-
-        
+    print(f'Finished {name} iCliff analysis')        
