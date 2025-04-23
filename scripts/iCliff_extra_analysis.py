@@ -37,9 +37,9 @@ for file in glob.glob('data/props/*.npy'):
     # Save the instances where the TS_SALI values are the in the top 10 for each compound in the rows
     for id in idx:
         # Get the top 10% of the ts_sali values for each compound
-        top = np.percentile(ts_sali[id], 90)
+        top = np.percentile(ts_sali[id], 99.99)
 
-        # Get the indices of the top 10% values
+        # Get the indices of the top 1% values
         top_indices = np.argwhere(ts_sali[id] > top)
         top_indices = top_indices[:, 0]
 
